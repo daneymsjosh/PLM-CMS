@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Auth\Post\CreateRequest;
 
 class PostController extends Controller
@@ -60,14 +61,18 @@ class PostController extends Controller
                 'media_upload_id' => $mediaUpload ? $mediaUpload->id : null,
                 'content_body' => $request->description
             ]);
-    
+            
+            $user = Auth::user();
+
             Post::create([
                 'post_category_id' => $request->category,
                 'post_status_id' => $request->status,
                 'content_id' => $content->id,
                 'post_title' => $request->title,
                 'schedule_posting' => $request->schedule,
-                'remarks' => 'testing'
+                'remarks' => 'testing',
+                'created_by_id' => $user->id,
+                'modified_by_id' => $user->id,
             ]);
 
             DB::commit();

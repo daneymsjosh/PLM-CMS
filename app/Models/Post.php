@@ -21,6 +21,8 @@ class Post extends Model
         'content_id',
         'post_title',
         'schedule_posting',
+        'created_by_id',
+        'modified_by_id',
         'remarks'
     ];
 
@@ -35,4 +37,13 @@ class Post extends Model
     public function content() {
         return $this->belongsTo(Content::class, 'content_id', 'id');
     }
+
+    public function createdBy() {
+        return $this->belongsTo(User::class, 'created_by_id', 'id');
+    }
+
+    public function modifiedBy()
+{
+    return $this->belongsTo(User::class, 'modified_by_id', 'id');
+}
 }

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('content_id')->constrained();
             $table->string('post_title');         
             $table->date('schedule_posting');
+            $table->foreignId('created_by_id')->constrained('users');
+            $table->foreignId('modified_by_id')->nullable()->constrained('users');
             $table->text('remarks');
             $table->timestamps();  
         });

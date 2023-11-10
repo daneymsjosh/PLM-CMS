@@ -32,7 +32,7 @@
                               <i class="ion-calendar"></i> {{ date('d M Y', strtotime($post->created_at)) }}
                             </li>
                             <li>
-                              <i class="ion-android-people"></i> {{ $post->status->post_status_name }}
+                              <i class="ion-android-people"></i> {{ $post->createdBy->name }}
                             </li>
                             <li>
                               <a href=""><i class="ion-pricetags"></i> {{ $post->category->post_category_name }}</a>
