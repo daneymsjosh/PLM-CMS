@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Auth\Post\CreateRequest;
+use App\Models\Tag;
 
 class PostController extends Controller
 {
@@ -32,7 +33,8 @@ class PostController extends Controller
     {
         $categories = PostCategory::all();
         $statuses = PostStatus::all();
-        return view('auth/posts/create', ['categories' => $categories, 'statuses' => $statuses]);
+        $tags = Tag::all();
+        return view('auth/posts/create', ['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
     }
 
     /**
@@ -64,7 +66,7 @@ class PostController extends Controller
             
             $user = Auth::user();
 
-            Post::create([
+            $post = Post::create([
                 'post_category_id' => $request->category,
                 'post_status_id' => $request->status,
                 'content_id' => $content->id,
@@ -74,6 +76,8 @@ class PostController extends Controller
                 'created_by_id' => $user->id,
                 'modified_by_id' => $user->id,
             ]);
+
+            $post->tags()->attach($request->input('tags', []));
 
             DB::commit();
         }

@@ -26,6 +26,7 @@ class CreateRequest extends FormRequest
             'category' => ['required'],
             'status' => ['required'],
             'description' => ['required', 'min:10', 'max:5000'],
+            'tags' => ['required', 'array'],
             'file' => ['mimes:jpg,png,pdf', 'max:2048', 'file']
         ];
     }

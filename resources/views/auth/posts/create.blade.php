@@ -4,6 +4,7 @@
 
 @section('styles')
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
 @endsection
     
 @section('content')
@@ -68,6 +69,14 @@
                     <textarea id="summernote" name="description" class="form-control" cols="30" rows="10">{{ old('description') }}</textarea>
                 </div>
                 <div class="form-group">
+                  <label>Tags</label>
+                  <select name="tags[]" class="form-control" multiple>
+                      @foreach ($tags as $tag)
+                        <option value="{{ $tag->id }}">{{ $tag->tag_name }}</option>
+                      @endforeach
+                  </select>
+                </div>
+                <div class="form-group">
                   <label>File upload</label>
                   <input type="file" name="file" class="form-control">
                 </div>
@@ -91,6 +100,13 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+      $('select[name="tags[]"]').select2();
+  });
+</script>
 
 {{-- <script>
     $(document).ready(function() {

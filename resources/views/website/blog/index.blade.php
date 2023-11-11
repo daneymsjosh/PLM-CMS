@@ -34,9 +34,13 @@
                             <li>
                               <i class="ion-android-people"></i> {{ $post->createdBy->name }}
                             </li>
-                            <li>
-                              <a href=""><i class="ion-pricetags"></i> {{ $post->category->post_category_name }}</a>
-                            </li>
+                            @foreach ($post->tags as $tag)
+                              @if ($loop->index < 3)
+                                <li>
+                                  <a href="#"><i class="ion-pricetags"></i> {{ $tag->tag_name }}</a>
+                                </li>
+                              @endif
+                            @endforeach
                           </ul>
                       </div>
                       <div class="post-content">

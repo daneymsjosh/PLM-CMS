@@ -42,8 +42,11 @@ class Post extends Model
         return $this->belongsTo(User::class, 'created_by_id', 'id');
     }
 
-    public function modifiedBy()
-{
-    return $this->belongsTo(User::class, 'modified_by_id', 'id');
-}
+    public function modifiedBy() {
+        return $this->belongsTo(User::class, 'modified_by_id', 'id');
+    }
+
+    public function tags() {
+        return $this->belongsToMany(Tag::class);
+    }
 }
