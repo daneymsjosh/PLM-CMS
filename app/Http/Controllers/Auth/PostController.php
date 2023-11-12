@@ -72,7 +72,6 @@ class PostController extends Controller
                 'content_id' => $content->id,
                 'post_title' => $request->title,
                 'schedule_posting' => $request->schedule,
-                'remarks' => 'testing',
                 'created_by_id' => $user->id,
                 'modified_by_id' => $user->id,
             ]);
