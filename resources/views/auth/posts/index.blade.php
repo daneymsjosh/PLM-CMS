@@ -46,7 +46,7 @@
                                     <td> {{ $post->status->post_status_name }} </td>
                                     <td>
                                         <a href="" class="btn btn-sm btn-success"><i class="fas fa-eye"></i></a>
-                                        <a href="" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+                                        <a href="{{ route('auth.posts.edit', $post->id) }}" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
                                         <a href="" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
                                     </td>   
                                 </tr>

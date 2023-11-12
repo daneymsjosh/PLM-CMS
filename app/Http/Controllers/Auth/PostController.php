@@ -68,7 +68,7 @@ class PostController extends Controller
 
             $post = Post::create([
                 'post_category_id' => $request->category,
-                'post_status_id' => $request->status,
+                'post_status_id' => PostStatus::ForApproval,
                 'content_id' => $content->id,
                 'post_title' => $request->title,
                 'schedule_posting' => $request->schedule,
@@ -104,7 +104,12 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $categories = PostCategory::all();
+        $statuses = PostStatus::all();
+        $tags = Tag::all();
+
+        return view('auth.posts.edit', compact('post', 'categories', 'statuses', 'tags'));
     }
 
     /**
@@ -112,7 +117,66 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+        
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|exists:post_categories,id',
+            'description' => 'required|string',
+            'tags' => 'array',
+            'tags.*' => 'exists:tags,id',
+            'file' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',
+            'schedule' => 'required|date',
+            'status' => 'required|exists:post_statuses,id',
+        ]);
+
+        try {
+            DB::beginTransaction();
+    
+            $post->content->update([
+                'content_body' => $request->description,
+            ]);
+            
+            $statusId = $request->status;
+            $post->update([
+                'post_category_id' => $request->category,
+                'post_title' => $request->title,
+                'schedule_posting' => $request->schedule,
+                'modified_by_id' => Auth::id(),
+                'post_status_id' => $statusId,
+            ]);
+    
+            $post->tags()->sync($request->input('tags', []));
+    
+            if ($request->file('file')) {
+                $file = $request->file('file');
+                $fileName = time().$file->getClientOriginalName();
+                $imagePath = public_path('/images/posts/');
+                $file->move($imagePath, $fileName);
+    
+                if ($post->content->mediaUpload) {
+                    $post->content->mediaUpload->update([
+                        'media_name' => $fileName,
+                    ]);
+                } else {
+                    $mediaUpload = MediaUpload::create([
+                        'media_name' => $fileName,
+                        'media_type_id' => 1,
+                    ]);
+    
+                    $post->content->update([
+                        'media_upload_id' => $mediaUpload->id,
+                    ]);
+                }
+            }
+    
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            dd($ex->getMessage());
+        }
+
+        return redirect()->route('posts.index')->with('success', 'Post updated successfully');
     }
 
     /**

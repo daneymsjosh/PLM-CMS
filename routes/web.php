@@ -24,3 +24,6 @@ Auth::routes();
 
 Route::get('auth/dashboard', [DashboardController::class, 'dashboard'])->name('auth.dashboard')->middleware('auth');
 Route::resource('auth/posts', PostController::class);
+
+Route::get('auth/posts/{post}/edit', [PostController::class, 'edit'])->name('auth.posts.edit');
+Route::put('auth/posts/{post}', [PostController::class, 'update'])->name('auth.posts.update');
