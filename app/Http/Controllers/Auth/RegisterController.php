@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use App\Models\UserRole;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Providers\RouteServiceProvider;
@@ -39,7 +42,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        // $this->middleware('guest'); Commented to allow registering of users even if logged in
     }
 
     /**
@@ -64,18 +67,37 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
+    // protected function create(array $data)
+    // {
+    //     return User::create([
+    //         'name' => $data['name'],
+    //         'email' => $data['email'],
+    //         'password' => Hash::make($data['password']),
+    //         'user_role_id' => $data['user_role_id'],
+    //     ]);
+    // }
+
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'user_role_id' => $data['user_role_id'],
         ]);
+
+        return $user;
     }
+
+    // public function showRegistrationForm()
+    // {
+    //     $roles = UserRole::all();
+    //     return view('auth.register', compact('roles'));
+    // }
+
     public function showRegistrationForm()
     {
         $roles = UserRole::all();
-        return view('auth.register', compact('roles'));
+        return response()->json(['roles' => $roles]);
     }
 }
