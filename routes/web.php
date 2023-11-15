@@ -6,6 +6,7 @@ use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\Auth\PostController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\DashboardController;
+use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,7 @@ Route::get('/', [WebsiteController::class, 'home'])->name('home');
 Route::get('/posts/{post}', [WebsiteController::class, 'show'])->name('website.posts.show');
 
 Auth::routes();
+Route::get('/get-csrf-token', [LoginController::class, 'getCsrfToken']);
 
 Route::get('auth/dashboard', [DashboardController::class, 'dashboard'])->name('auth.dashboard')->middleware('auth');
 Route::resource('auth/posts', PostController::class);
