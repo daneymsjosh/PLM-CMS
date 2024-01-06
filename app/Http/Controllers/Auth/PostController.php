@@ -29,21 +29,21 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    // public function create()
-    // {
-    //     $categories = PostCategory::all();
-    //     $statuses = PostStatus::all();
-    //     $tags = Tag::all();
-    //     return view('auth/posts/create', ['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
-    // }
-
     public function create()
     {
         $categories = PostCategory::all();
         $statuses = PostStatus::all();
         $tags = Tag::all();
-        return response()->json(['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
+        return view('auth/posts/create', ['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
     }
+
+    // public function create()
+    // {
+    //     $categories = PostCategory::all();
+    //     $statuses = PostStatus::all();
+    //     $tags = Tag::all();
+    //     return response()->json(['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
+    // }
 
     /**
      * Store a newly created resource in storage.

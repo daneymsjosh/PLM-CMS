@@ -42,7 +42,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        // $this->middleware('guest'); Commented to allow registering of users even if logged in
+        $this->middleware('guest'); //Commented to allow registering of users even if logged in
     }
 
     /**
@@ -67,37 +67,37 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    // protected function create(array $data)
-    // {
-    //     return User::create([
-    //         'name' => $data['name'],
-    //         'email' => $data['email'],
-    //         'password' => Hash::make($data['password']),
-    //         'user_role_id' => $data['user_role_id'],
-    //     ]);
-    // }
-
     protected function create(array $data)
     {
-        $user = User::create([
+        return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'user_role_id' => $data['user_role_id'],
         ]);
-
-        return $user;
     }
 
-    // public function showRegistrationForm()
+    // protected function create(array $data)
     // {
-    //     $roles = UserRole::all();
-    //     return view('auth.register', compact('roles'));
+    //     $user = User::create([
+    //         'name' => $data['name'],
+    //         'email' => $data['email'],
+    //         'password' => Hash::make($data['password']),
+    //         'user_role_id' => $data['user_role_id'],
+    //     ]);
+
+    //     return $user;
     // }
 
     public function showRegistrationForm()
     {
         $roles = UserRole::all();
-        return response()->json(['roles' => $roles]);
+        return view('auth.register', compact('roles'));
     }
+
+    // public function showRegistrationForm()
+    // {
+    //     $roles = UserRole::all();
+    //     return response()->json(['roles' => $roles]);
+    // }
 }

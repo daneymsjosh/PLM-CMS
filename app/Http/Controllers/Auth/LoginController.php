@@ -18,27 +18,27 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    protected function sendLoginResponse(Request $request)
-    {
-        $request->session()->regenerate();
+    // protected function sendLoginResponse(Request $request)
+    // {
+    //     $request->session()->regenerate();
 
-        $this->clearLoginAttempts($request);
+    //     $this->clearLoginAttempts($request);
 
-        return $this->authenticated($request, $this->guard()->user())
-            ?: response()->json(['message' => 'Login successful']);
-    }
+    //     return $this->authenticated($request, $this->guard()->user())
+    //         ?: response()->json(['message' => 'Login successful']);
+    // }
 
-    public function logout(Request $request)
-    {
-        $this->guard()->logout();
+    // public function logout(Request $request)
+    // {
+    //     $this->guard()->logout();
 
-        $request->session()->invalidate();
+    //     $request->session()->invalidate();
 
-        return response()->json(['message' => 'Logout successful']);
-    }
+    //     return response()->json(['message' => 'Logout successful']);
+    // }
 
-    public function getCsrfToken()
-    {
-        return response()->json(['csrf_token' => csrf_token()]);
-    }
+    // public function getCsrfToken()
+    // {
+    //     return response()->json(['csrf_token' => csrf_token()]);
+    // }
 }
