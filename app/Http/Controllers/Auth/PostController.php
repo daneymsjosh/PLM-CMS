@@ -22,7 +22,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with(['category', 'status', 'content.mediaUpload'])->get();
+        $userId = Auth::id();
+
+        $posts = Post::with(['category', 'status', 'content.mediaUpload'])->where('created_by_id', $userId)->get();
         return view('auth.posts.index', ['posts' => $posts]);
     }
 

@@ -27,7 +27,7 @@ class CreateRequest extends FormRequest
             'status' => ['nullable'],
             'description' => ['required', 'min:10', 'max:5000'],
             'tags' => ['required', 'array'],
-            'file' => ['mimes:jpg,png,pdf', 'max:2048', 'file']
+            'file' => ['mimes:jpg,png,mp4,mov', 'max:125000', 'file']
         ];
     }
 }
