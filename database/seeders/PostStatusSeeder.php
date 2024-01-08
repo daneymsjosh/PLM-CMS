@@ -19,7 +19,7 @@ class PostStatusSeeder extends Seeder
         ]);
 
         PostStatus::create([
-            'post_status_name' => 'Published',
+            'post_status_name' => 'Approved',
             'post_status_detail' => 'Post approved by super admin',
         ]);
 

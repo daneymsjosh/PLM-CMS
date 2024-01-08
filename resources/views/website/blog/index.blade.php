@@ -22,7 +22,7 @@
                     <div class="post">
                       <div class="post-media post-thumb">
                           <a href="#">
-                              <img src="{{ $post->content->mediaUpload ? asset('images/posts/' . $post->content->mediaUpload->media_name) : asset('images/posts/default.jpg') }}" style="width:70%">
+                              <img src="{{ $post->content->mediaUpload ? asset('medias/posts/' . $post->content->mediaUpload->media_name) : asset('medias/posts/default.jpg') }}" style="width:70%">
                           </a>
                       </div>
                       <h3 class="post-title"><a href="#">{{ $post->post_title }}</a></h3>

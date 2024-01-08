@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('contents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('media_upload_id')->nullable()->constrained();
             $table->text('content_body');
             $table->timestamps();
         });

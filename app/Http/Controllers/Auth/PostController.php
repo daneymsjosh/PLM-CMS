@@ -24,7 +24,7 @@ class PostController extends Controller
     {
         $userId = Auth::id();
 
-        $posts = Post::with(['category', 'status', 'content.mediaUpload'])->where('created_by_id', $userId)->get();
+        $posts = Post::with(['category', 'status', 'content.mediaUploads'])->where('created_by_id', $userId)->get();
         return view('auth.posts.index', ['posts' => $posts]);
     }
 
@@ -55,27 +55,31 @@ class PostController extends Controller
         try {
             DB::beginTransaction();
 
-            $mediaUpload = null;
-            
-            if ($request->file('file')) {
-                $file = $request->file; 
-                $fileName = time(). $file->getClientOriginalName();
-                $imagePath = public_path('/images/posts/');
-                $file->move($imagePath, $fileName);
-                
-                $mediaUpload = MediaUpload::create([
-                    'media_name' => $fileName,
-                    'media_type_id' => '1'
-                ]);
-            }
-    
+            // Create Content
             $content = Content::create([
-                'media_upload_id' => $mediaUpload ? $mediaUpload->id : null,
-                'content_body' => $request->description
+                'content_body' => $request->description,
             ]);
-            
-            $user = Auth::user();
 
+            // Associate Media Uploads with Content
+            $mediaUploads = [];
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $fileName = time() . $file->getClientOriginalName();
+                    $imagePath = public_path('/medias/posts/');
+                    $file->move($imagePath, $fileName);
+
+                    $mediaUpload = MediaUpload::create([
+                        'media_name' => $fileName,
+                        'media_type_id' => $this->getMediaTypeFromExtension($file->getClientOriginalExtension()),
+                    ]);
+
+                    $mediaUploads[] = $mediaUpload;
+                }
+                $content->mediaUploads()->saveMany($mediaUploads);
+            }
+
+            // Create Post and associate with Content
+            $user = Auth::user();
             $post = Post::create([
                 'post_category_id' => $request->category,
                 'post_status_id' => PostStatus::ForApproval,
@@ -86,21 +90,33 @@ class PostController extends Controller
                 'modified_by_id' => $user->id,
             ]);
 
+            // Attach Tags to Post
             $post->tags()->attach($request->input('tags', []));
 
             DB::commit();
-        }
-
-        catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             DB::rollBack();
             dd($ex->getMessage());
         }
-        
+
         $request->session()->flash('alert-success', 'Post Created Successfully');
 
         return redirect()->route('posts.index');
     }
 
+    private function getMediaTypeFromExtension($extension)
+    {
+        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+        $videoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'mkv'];
+
+        if (in_array(strtolower($extension), $imageExtensions)) {
+            return 1;
+        } elseif (in_array(strtolower($extension), $videoExtensions)) {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
     /**
      * Display the specified resource.
      */

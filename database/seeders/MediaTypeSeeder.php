@@ -17,5 +17,10 @@ class MediaTypeSeeder extends Seeder
             'media_type_name' => 'Image',
             'media_type_detail' => 'Files that are jpg, png, etc'
         ]);
+
+        MediaType::create([
+            'media_type_name' => 'Video',
+            'media_type_detail' => 'Files that are mp4, etc'
+        ]);
     }
 }

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('media_type_id')->constrained();
             $table->string('media_name');
+            $table->string('caption_title')->nullable();
+            $table->text('caption_description')->nullable();
             $table->timestamps();
         });
     }

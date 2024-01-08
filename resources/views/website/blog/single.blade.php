@@ -39,7 +39,7 @@
                           </ul>
                         </div>
                       <div class="post-thumb">
-                          <img class="img-responsive" src="{{ $post->content->mediaUpload ? asset('images/posts/' . $post->content->mediaUpload->media_name) : asset('images/posts/default.jpg') }}" alt="">
+                          <img class="img-responsive" src="{{ $post->content->mediaUpload ? asset('medias/posts/' . $post->content->mediaUpload->media_name) : asset('medias/posts/default.jpg') }}" alt="">
                       </div>
                       <div class="post-content post-excerpt">
                           <p>{!! $post->content->content_body !!} </p>

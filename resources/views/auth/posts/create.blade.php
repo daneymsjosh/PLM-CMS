@@ -78,7 +78,18 @@
                 </div>
                 <div class="form-group">
                   <label>File upload</label>
-                  <input type="file" name="file" class="form-control">
+                  {{-- <input type="file" name="file" class="form-control"> --}}
+                  <input type="file" name="files[]" class="form-control" multiple>
+                </div>
+                <div class="file-details" style="display: none;">
+                  <div class="form-group">
+                    <label>Caption Title</label>
+                    <input type="text" name="caption_titles[]" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label>Caption Description</label>
+                    <textarea name="caption_descriptions[]" class="form-control"></textarea>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label>Post Schedule</label>
@@ -104,7 +115,39 @@
 
 <script>
   $(document).ready(function() {
-      $('select[name="tags[]"]').select2();
+    $('select[name="tags[]"]').select2();
+
+    $('input[name="files[]"]').on('change', function () {
+      displaySelectedFiles(this.files);
+    });
+
+    function displaySelectedFiles(files) {
+      const selectedFilesList = $('#selectedFilesList');
+      const fileDetailsContainer = $('#fileDetailsContainer');
+
+      selectedFilesList.empty();
+      fileDetailsContainer.empty();
+
+      for (let i = 0; i < files.length; i++) {
+        const listItem = `<li>${files[i].name}</li>`;
+        selectedFilesList.append(listItem);
+
+        const fileDetails = `
+          <div class="file-details">
+            <div class="form-group">
+              <label>Media ${i + 1}</label>
+              <input type="text" name="media_titles[]" class="form-control">
+            </div>
+          </div>
+        `;
+
+        // Append the new set of file details for each file
+        fileDetailsContainer.append(fileDetails);
+      }
+
+      // Display the file details container if there are selected files
+      fileDetailsContainer.toggle(files.length > 0);
+    }
   });
 </script>
 

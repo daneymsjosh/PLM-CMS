@@ -11,7 +11,7 @@ class WebsiteController extends Controller
     public function home() {
         $currentDate = Carbon::now();
 
-        $posts = Post::where('post_status_id', Post::Published)
+        $posts = Post::where('post_status_id', Post::Approved)
             ->where(function ($query) use ($currentDate) {
                 $query->whereNull('schedule_posting')
                     ->orWhere('schedule_posting', '<=', $currentDate);

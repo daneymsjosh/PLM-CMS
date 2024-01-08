@@ -36,7 +36,11 @@
                             @foreach ($posts as $post)
                                 <tr>
                                     <td class="py-1">
-                                    <img src="{{ $post->content->mediaUpload ? asset('images/posts/' . $post->content->mediaUpload->media_name) : asset('images/posts/default.jpg') }}" alt="image" />
+                                      @if ($post->content->mediaUploads->isNotEmpty())
+                                        <img src="{{ asset('medias/posts/' . $post->content->mediaUploads->first()->media_name) }}" alt="image" />
+                                      @else
+                                        <img src="{{ asset('medias/posts/default.jpg') }}" alt="default image" />
+                                      @endif
                                     </td>
                                     <td> {{ $post->post_title }} </td>
                                     <td>

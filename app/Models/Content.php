@@ -10,11 +10,16 @@ class Content extends Model
     use HasFactory;
 
     protected $fillable = [
-        'media_upload_id',
         'content_body'
     ];
 
-    public function mediaUpload() {
-        return $this->belongsTo(MediaUpload::class, 'media_upload_id', 'id');
+    public function mediaUploads()
+    {
+        return $this->belongsToMany(MediaUpload::class, 'content_media');
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'content_id', 'id');
     }
 }
