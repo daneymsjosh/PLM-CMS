@@ -88,16 +88,46 @@ class RegisterController extends Controller
 
     //     return $user;
     // }
-
-    public function showRegistrationForm()
+    
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
     {
-        $roles = UserRole::all();
-        return view('auth.register', compact('roles'));
+        $this->validator($request->all())->validate();
+
+        $user = $this->create($request->all());
+
+        return $this->registered($request, $user) ?: redirect($this->redirectPath());
+    }
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, User $user)
+    {
+        return response()->json([
+            'message' => 'User registered successfully',
+            'user' => $user,
+        ], 201);
     }
 
     // public function showRegistrationForm()
     // {
     //     $roles = UserRole::all();
-    //     return response()->json(['roles' => $roles]);
+    //     return view('auth.register', compact('roles'));
     // }
+
+    public function showRegistrationForm()
+    {
+        $roles = UserRole::all();
+        return response()->json(['roles' => $roles]);
+    }
 }
