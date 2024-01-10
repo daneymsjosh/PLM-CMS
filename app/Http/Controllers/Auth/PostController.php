@@ -7,6 +7,7 @@ use App\Models\Content;
 use App\Models\PostStatus;
 use App\Models\MediaUpload;
 use App\Models\PostCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -20,12 +21,34 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // public function index()
+    // {
+    //     $user = Auth::user();
+
+    //     if ($user->isSuperAdmin()) {
+    //         $posts = Post::with(['category', 'status', 'content.mediaUploads'])->get();
+    //     } else {
+    //         $posts = Post::with(['category', 'status', 'content.mediaUploads'])
+    //             ->where('created_by_id', $user->id)
+    //             ->get();
+    //     }
+
+    //     return view('auth.posts.index', ['posts' => $posts]);
+    // }
+
     public function index()
     {
-        $userId = Auth::id();
+        $user = Auth::user();
 
-        $posts = Post::with(['category', 'status', 'content.mediaUploads'])->where('created_by_id', $userId)->get();
-        return view('auth.posts.index', ['posts' => $posts]);
+        if ($user->isSuperAdmin()) {
+            $posts = Post::with(['category', 'status', 'content.mediaUploads'])->get();
+        } else {
+            $posts = Post::with(['category', 'status', 'content.mediaUploads'])
+                ->where('created_by_id', $user->id)
+                ->get();
+        }
+
+        return response()->json(['posts' => $posts]);
     }
 
     /**
@@ -55,12 +78,10 @@ class PostController extends Controller
         try {
             DB::beginTransaction();
 
-            // Create Content
             $content = Content::create([
                 'content_body' => $request->description,
             ]);
 
-            // Associate Media Uploads with Content
             $mediaUploads = [];
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
@@ -78,11 +99,10 @@ class PostController extends Controller
                 $content->mediaUploads()->saveMany($mediaUploads);
             }
 
-            // Create Post and associate with Content
             $user = Auth::user();
             $post = Post::create([
                 'post_category_id' => $request->category,
-                'post_status_id' => PostStatus::ForApproval,
+                'post_status_id' => $request->input('status', PostStatus::ForApproval),
                 'content_id' => $content->id,
                 'post_title' => $request->title,
                 'schedule_posting' => $request->schedule,
@@ -90,7 +110,6 @@ class PostController extends Controller
                 'modified_by_id' => $user->id,
             ]);
 
-            // Attach Tags to Post
             $post->tags()->attach($request->input('tags', []));
 
             DB::commit();
