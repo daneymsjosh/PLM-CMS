@@ -20,30 +20,62 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
+<<<<<<< Updated upstream
     public function index()
     {
         $posts = Post::with(['category', 'status', 'content.mediaUpload'])->get();
         return view('auth.posts.index', ['posts' => $posts]);
     }
+=======
+     public function index()
+     {
+         $user = Auth::user();
+
+         if ($user->isSuperAdmin()) {
+             $posts = Post::with(['category', 'status', 'content.mediaUploads'])->get();
+         } else {
+             $posts = Post::with(['category', 'status', 'content.mediaUploads'])
+                 ->where('created_by_id', $user->id)
+                 ->get();
+         }
+
+         return view('auth.posts.index', ['posts' => $posts]);
+     }
+
+    /**public function index()
+    {
+        $user = Auth::user();
+
+        if ($user->isSuperAdmin()) {
+            $posts = Post::with(['category', 'status', 'content.mediaUploads'])->get();
+        } else {
+            $posts = Post::with(['category', 'status', 'content.mediaUploads'])
+                ->where('created_by_id', $user->id)
+                ->get();
+        }
+
+        return response()->json(['posts' => $posts]);
+    }**/
+>>>>>>> Stashed changes
 
     /**
      * Show the form for creating a new resource.
      */
-    // public function create()
-    // {
-    //     $categories = PostCategory::all();
-    //     $statuses = PostStatus::all();
-    //     $tags = Tag::all();
-    //     return view('auth/posts/create', ['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
-    // }
-
     public function create()
+     {
+         $categories = PostCategory::all();
+         $statuses = PostStatus::all();
+         $tags = Tag::all();
+         return view('auth/posts/create', ['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
+     }
+
+    /**public function create()
     {
         $categories = PostCategory::all();
         $statuses = PostStatus::all();
         $tags = Tag::all();
         return response()->json(['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
-    }
+    }**/
 
     /**
      * Store a newly created resource in storage.

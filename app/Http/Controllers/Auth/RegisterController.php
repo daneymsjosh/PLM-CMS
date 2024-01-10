@@ -73,9 +73,65 @@ class RegisterController extends Controller
             'user_role_id' => $data['user_role_id'],
         ]);
     }
+<<<<<<< Updated upstream
+=======
+
+    // protected function create(array $data)
+    // {
+    //     $user = User::create([
+    //         'name' => $data['name'],
+    //         'email' => $data['email'],
+    //         'password' => Hash::make($data['password']),
+    //         'user_role_id' => $data['user_role_id'],
+    //     ]);
+
+    //     return $user;
+    // }
+    
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        $user = $this->create($request->all());
+
+        return $this->registered($request, $user) ?: redirect($this->redirectPath());
+    }
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, User $user)
+    {
+        return response()->json([
+            'message' => 'User registered successfully',
+            'user' => $user,
+        ], 201);
+    }
+
+>>>>>>> Stashed changes
     public function showRegistrationForm()
     {
         $roles = UserRole::all();
         return view('auth.register', compact('roles'));
     }
+<<<<<<< Updated upstream
 }
+=======
+
+    // public function showRegistrationForm()
+    // {
+    //     $roles = UserRole::all();
+    //     return response()->json(['roles' => $roles]);
+    // }
+}
+>>>>>>> Stashed changes

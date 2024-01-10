@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class WebsiteController extends Controller
 {
+<<<<<<< Updated upstream
     // public function home() {
     //     $currentDate = Carbon::now();
 
@@ -25,6 +26,9 @@ class WebsiteController extends Controller
     // }
 
     public function home(Request $request) {
+=======
+    public function home() {
+>>>>>>> Stashed changes
         $currentDate = Carbon::now();
 
         $posts = Post::where('post_status_id', Post::Published)
@@ -33,13 +37,29 @@ class WebsiteController extends Controller
                     ->orWhere('schedule_posting', '<=', $currentDate);
             })
             ->get();
-        
-        $request = $posts;
-        return response()->json(['posts' => $request]);
+        return view('website.blog.index', ['posts' => $posts]);
     }
 
-    public function show(Request $request, Post $post) {
-        $request = $post;
-        return response()->json(['post' => $request]);
+    public function show(Post $post) {
+        return view('website.blog.single', ['post' => $post]);
     }
+
+    // public function home(Request $request) {
+    //     $currentDate = Carbon::now();
+
+    //     $posts = Post::where('post_status_id', Post::Approved)
+    //         ->where(function ($query) use ($currentDate) {
+    //             $query->whereNull('schedule_posting')
+    //                 ->orWhere('schedule_posting', '<=', $currentDate);
+    //         })
+    //         ->get();
+        
+    //     $request = $posts;
+    //     return response()->json(['posts' => $request]);
+    // }
+
+    // public function show(Request $request, Post $post) {
+    //     $request = $post;
+    //     return response()->json(['post' => $request]);
+    // }
 }
