@@ -73,8 +73,6 @@ class RegisterController extends Controller
             'user_role_id' => $data['user_role_id'],
         ]);
     }
-<<<<<<< Updated upstream
-=======
 
     // protected function create(array $data)
     // {
@@ -118,20 +116,17 @@ class RegisterController extends Controller
         ], 201);
     }
 
->>>>>>> Stashed changes
     public function showRegistrationForm()
     {
         $roles = UserRole::all();
         return view('auth.register', compact('roles'));
     }
-<<<<<<< Updated upstream
+
 }
-=======
 
     // public function showRegistrationForm()
     // {
     //     $roles = UserRole::all();
     //     return response()->json(['roles' => $roles]);
     // }
-}
->>>>>>> Stashed changes
+
