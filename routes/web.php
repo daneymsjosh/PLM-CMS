@@ -21,7 +21,7 @@ use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', [WebsiteController::class, 'home'])->name('home');
 Route::get('/posts/{post}', [WebsiteController::class, 'show'])->name('website.posts.show');
-
+//test
 Auth::routes();
 Route::get('/get-csrf-token', [LoginController::class, 'getCsrfToken']);
 
