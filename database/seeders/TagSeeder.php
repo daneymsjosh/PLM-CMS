@@ -13,6 +13,7 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
+
         Tag::create([
             'tag_name' => 'Computer Science',
             'tag_detail' => 'About Computer Science',
@@ -51,6 +52,36 @@ class TagSeeder extends Seeder
         Tag::create([
             'tag_name' => 'Research',
             'tag_detail' => 'About Research',
+        ]);
+
+        Tag::create([
+            'tag_name' => 'CAT:About',
+            'tag_detail' => 'About',
+        ]);
+
+        Tag::create([
+            'tag_name' => 'CAT:Admission',
+            'tag_detail' => 'Admission',
+        ]);
+
+        Tag::create([
+            'tag_name' => 'CAT:News',
+            'tag_detail' => 'News',
+        ]);
+
+        Tag::create([
+            'tag_name' => 'CAT:Students',
+            'tag_detail' => 'Students',
+        ]);
+
+        Tag::create([
+            'tag_name' => 'CAT:Community',
+            'tag_detail' => 'Community',
+        ]);
+
+        Tag::create([
+            'tag_name' => 'CAT:Alumni',
+            'tag_detail' => 'Alumni',
         ]);
     }
 }
