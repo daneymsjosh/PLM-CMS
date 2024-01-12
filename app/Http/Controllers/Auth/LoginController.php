@@ -18,7 +18,7 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    /**protected function sendLoginResponse(Request $request)
+    protected function sendLoginResponse(Request $request)
     {
         $request->session()->regenerate();
 
@@ -40,5 +40,5 @@ class LoginController extends Controller
     public function getCsrfToken()
     {
         return response()->json(['csrf_token' => csrf_token()]);
-    }**/
+    }
 }
