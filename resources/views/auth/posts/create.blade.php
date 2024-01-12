@@ -55,16 +55,11 @@
                 <div class="form-group">
                   <label>Status</label>
                   <select name="status" class="form-control" @if(!auth()->user()->isSuperAdmin()) disabled @endif>
-                      @if (auth()->user()->isSuperAdmin())
-                          <option value="{{ App\Models\PostStatus::Approved }}" selected>Approved</option>
-                      @else
-                          <option value="{{ App\Models\PostStatus::ForApproval }}" selected>For Approval</option>
-                      @endif
-              
+                    <option value="{{ App\Models\PostStatus::ForApproval }}" selected>For Approval</option>
                       @if (count($statuses) > 0)
-                          @foreach ($statuses as $status)
-                              <option value="{{ $status->id }}">{{ $status->post_status_name }}</option>
-                          @endforeach
+                        @foreach ($statuses as $status)
+                          <option value="{{ $status->id }}">{{ $status->post_status_name }}</option>
+                        @endforeach
                       @endif
                   </select>
                 </div>
