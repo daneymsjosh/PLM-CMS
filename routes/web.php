@@ -26,7 +26,7 @@ Auth::routes();
 Route::get('/get-csrf-token', [LoginController::class, 'getCsrfToken']);
 
 Route::get('auth/dashboard', [DashboardController::class, 'dashboard'])->name('auth.dashboard')->middleware('auth');
-Route::resource('auth/posts', PostController::class);
+Route::resource('auth/posts', PostController::class); //Pagcreate ng post ung sa store function
 
 Route::get('auth/posts/{post}/edit', [PostController::class, 'edit'])->name('auth.posts.edit');
 Route::put('auth/posts/{post}', [PostController::class, 'update'])->name('auth.posts.update');
