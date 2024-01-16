@@ -20,33 +20,33 @@ class TagSeeder extends Seeder
         ]);
 
         Tag::create([
-            'tag_name' => 'Gaming',
-            'tag_detail' => 'About Gaming',
+            'tag_name' => 'PLM',
+            'tag_detail' => 'Pamantasan',
         ]);
 
         Tag::create([
-            'tag_name' => 'Exams',
-            'tag_detail' => 'About Exams',
+            'tag_name' => 'Activities',
+            'tag_detail' => 'About Activities',
         ]);
 
         Tag::create([
-            'tag_name' => 'Lifestyle',
-            'tag_detail' => 'About Lifestyle',
+            'tag_name' => 'Students',
+            'tag_detail' => 'About Students',
         ]);
 
         Tag::create([
-            'tag_name' => 'Grades',
-            'tag_detail' => 'About Grades',
+            'tag_name' => 'University Updates',
+            'tag_detail' => 'About University Updates',
         ]);
 
         Tag::create([
-            'tag_name' => 'Professors',
-            'tag_detail' => 'About Professors',
+            'tag_name' => 'Faculty',
+            'tag_detail' => 'About Faculty Members',
         ]);
 
         Tag::create([
-            'tag_name' => 'Sports',
-            'tag_detail' => 'About Sports',
+            'tag_name' => 'Events',
+            'tag_detail' => 'About Events',
         ]);
 
         Tag::create([

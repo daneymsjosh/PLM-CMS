@@ -17,39 +17,40 @@ use App\Models\Tag;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   
     public function index()
     {
-        $userId = Auth::id();
+        $user = Auth::user();
 
-        $posts = Post::with(['category', 'status', 'content.mediaUploads'])->where('created_by_id', $userId)->get();
+        if ($user->isSuperAdmin()) {
+            $posts = Post::with(['category', 'status', 'content.mediaUploads'])->get();
+        } else {
+            $posts = Post::with(['category', 'status', 'content.mediaUploads'])
+                ->where('created_by_id', $user->id)
+                ->get();
+        }
+
         return view('auth.posts.index', ['posts' => $posts]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     $categories = PostCategory::all();
-    //     $statuses = PostStatus::all();
-    //     $tags = Tag::all();
-    //     return view('auth/posts/create', ['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
-    // }
-
+    
     public function create()
     {
         $categories = PostCategory::all();
         $statuses = PostStatus::all();
         $tags = Tag::all();
-        return response()->json(['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
+        return view('auth/posts/create', ['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // public function create()
+    // {
+    //     $categories = PostCategory::all();
+    //     $statuses = PostStatus::all();
+    //     $tags = Tag::all();
+    //     return response()->json(['categories' => $categories, 'statuses' => $statuses, 'tags' => $tags]);
+    // }
+
+   
     public function store(CreateRequest $request)
     {
         try {
@@ -82,7 +83,8 @@ class PostController extends Controller
             $user = Auth::user();
             $post = Post::create([
                 'post_category_id' => $request->category,
-                'post_status_id' => PostStatus::ForApproval,
+                // 'post_status_id' => $request->status,
+                'post_status_id' => $request->input('status', PostStatus::ForApproval),
                 'content_id' => $content->id,
                 'post_title' => $request->title,
                 'schedule_posting' => $request->schedule,
@@ -117,17 +119,12 @@ class PostController extends Controller
             return 3;
         }
     }
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $post = Post::findOrFail($id);
@@ -138,64 +135,78 @@ class PostController extends Controller
         return view('auth.posts.edit', compact('post', 'categories', 'statuses', 'tags'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+  
     public function update(Request $request, string $id)
     {
         $post = Post::findOrFail($id);
-        
+
         $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|exists:post_categories,id',
             'description' => 'required|string',
             'tags' => 'array',
             'tags.*' => 'exists:tags,id',
-            'file' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',
+            'file' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:5000',
             'schedule' => 'required|date',
-            'status' => 'required|exists:post_statuses,id',
         ]);
 
         try {
             DB::beginTransaction();
-    
+
             $post->content->update([
                 'content_body' => $request->description,
             ]);
-            
+
             $statusId = $request->status;
-            $post->update([
-                'post_category_id' => $request->category,
-                'post_title' => $request->title,
-                'schedule_posting' => $request->schedule,
-                'modified_by_id' => Auth::id(),
-                'post_status_id' => $statusId,
-            ]);
-    
+
+            
+            if (auth()->user()->isSuperAdmin()) {
+                $post->update([
+                    'post_category_id' => $request->category,
+                    'post_title' => $request->title,
+                    'schedule_posting' => $request->schedule,
+                    'modified_by_id' => Auth::id(),
+                    'post_status_id' => $statusId,
+                ]);
+            } else {
+            
+                $post->update([
+                    'post_category_id' => $request->category,
+                    'post_title' => $request->title,
+                    'schedule_posting' => $request->schedule,
+                    'modified_by_id' => Auth::id(),
+                ]);
+            }
+
             $post->tags()->sync($request->input('tags', []));
-    
-            if ($request->file('file')) {
-                $file = $request->file('file');
-                $fileName = time().$file->getClientOriginalName();
-                $imagePath = public_path('/images/posts/');
-                $file->move($imagePath, $fileName);
-    
-                if ($post->content->mediaUpload) {
-                    $post->content->mediaUpload->update([
-                        'media_name' => $fileName,
-                    ]);
-                } else {
-                    $mediaUpload = MediaUpload::create([
-                        'media_name' => $fileName,
-                        'media_type_id' => 1,
-                    ]);
-    
-                    $post->content->update([
-                        'media_upload_id' => $mediaUpload->id,
-                    ]);
+
+          
+        if ($request->hasFile('file')) {
+       
+            if ($post->content->mediaUploads) {
+                foreach ($post->content->mediaUploads as $mediaUpload) {
+                    $mediaUpload->delete();
                 }
             }
-    
+
+   
+            $mediaUploads = [];
+            foreach ($request->file('file') as $file) {
+                $fileName = time() . $file->getClientOriginalName();
+                $imagePath = public_path('/images/posts/');
+                $file->move($imagePath, $fileName);
+
+                $mediaUpload = MediaUpload::create([
+                    'media_name' => $fileName,
+                    'media_type_id' => $this->getMediaTypeFromExtension($file->getClientOriginalExtension()),
+                ]);
+
+                $mediaUploads[] = $mediaUpload;
+            }
+
+            $post->content->mediaUploads()->saveMany($mediaUploads);
+        }
+
             DB::commit();
         } catch (\Exception $ex) {
             DB::rollBack();
@@ -205,16 +216,8 @@ class PostController extends Controller
         return redirect()->route('posts.index')->with('success', 'Post updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
-    }
-
-    public function __construct()
-    {
-        $this->middleware('auth:api');
     }
 }

@@ -67,27 +67,27 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'user_role_id' => $data['user_role_id'],
-        ]);
-    }
-
     // protected function create(array $data)
     // {
-    //     $user = User::create([
+    //     return User::create([
     //         'name' => $data['name'],
     //         'email' => $data['email'],
     //         'password' => Hash::make($data['password']),
     //         'user_role_id' => $data['user_role_id'],
     //     ]);
-
-    //     return $user;
     // }
+
+    protected function create(array $data)
+    {
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'user_role_id' => $data['user_role_id'],
+        ]);
+
+        return $user;
+    }
     
     /**
      * Handle a registration request for the application.
@@ -111,23 +111,23 @@ class RegisterController extends Controller
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    protected function registered(Request $request, User $user)
-    {
-        return response()->json([
-            'message' => 'User registered successfully',
-            'user' => $user,
-        ], 201);
-    }
-
-    // public function showRegistrationForm()
+    // protected function registered(Request $request, User $user)
     // {
-    //     $roles = UserRole::all();
-    //     return view('auth.register', compact('roles'));
+    //     return response()->json([
+    //         'message' => 'User registered successfully',
+    //         'user' => $user,
+    //     ], 201);
     // }
 
     public function showRegistrationForm()
     {
         $roles = UserRole::all();
-        return response()->json(['roles' => $roles]);
+        return view('auth.register', compact('roles'));
     }
+
+    // public function showRegistrationForm()
+    // {
+    //     $roles = UserRole::all();
+    //     return response()->json(['roles' => $roles]);
+    // }
 }

@@ -39,7 +39,11 @@
                           </ul>
                         </div>
                       <div class="post-thumb">
-                          <img class="img-responsive" src="{{ $post->content->mediaUpload ? asset('medias/posts/' . $post->content->mediaUpload->media_name) : asset('medias/posts/default.jpg') }}" alt="">
+                      @if ($post->content->mediaUploads->isNotEmpty())
+                                        <img src="{{ asset('medias/posts/' . $post->content->mediaUploads->first()->media_name) }}" alt="image" style="width: 400px;"/>
+                                      @else
+                                        <img src="{{ asset('medias/posts/default.jpg') }}" alt="default image" style="width: 400px;"/>
+                                      @endif
                       </div>
                       <div class="post-content post-excerpt">
                           <p>{!! $post->content->content_body !!} </p>
